@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>100 Days with Aya 💕</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --rose: #e8547a;
+    --blush: #f9c6d0;
+    --deep: #8b1a3a;
+    --cream: #fdf6f0;
+    --gold: #c9a96e;
+    --soft: #fce8ee;
+  }
+
+  html, body {
+    width: 100%; height: 100%;
+    overflow-x: hidden;
+    background: var(--cream);
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.27 2 8.5 2 5.41 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.08C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.41 22 8.5c0 3.77-3.4 6.86-8.55 11.53L12 21.35z' fill='%23e8547a' opacity='0.8'/%3E%3C/svg%3E") 12 12, auto;
+  }
+
+  /* PARTICLE CANVAS */
+  #canvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+    overflow: hidden;
+    background: radial-gradient(ellipse at 50% 60%, #fce8ee 0%, #fdf0f5 40%, var(--cream) 100%);
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: 
+      radial-gradient(circle at 20% 20%, rgba(232,84,122,0.08) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(201,169,110,0.08) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  /* FLOATING FLOWERS (CSS) */
+  .flower-ring {
+    position: absolute;
+    width: 500px; height: 500px;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    animation: spin 40s linear infinite;
+    pointer-events: none;
+  }
+
+  .petal {
+    position: absolute;
+    font-size: 1.6rem;
+    animation: floatPetal 3s ease-in-out infinite alternate;
+  }
+
+  @keyframes spin { from { transform: translate(-50%,-50%) rotate(0deg); } to { transform: translate(-50%,-50%) rotate(360deg); } }
+  @keyframes floatPetal { from { transform: translateY(0) scale(1); } to { transform: translateY(-12px) scale(1.1); } }
+
+  /* COUNTER BADGE */
+  .counter-badge {
+    position: relative;
+    background: linear-gradient(135deg, var(--rose), var(--deep));
+    color: white;
+    border-radius: 50%;
+    width: 160px; height: 160px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    box-shadow: 0 0 0 8px rgba(232,84,122,0.15), 0 0 0 16px rgba(232,84,122,0.07), 0 20px 60px rgba(139,26,58,0.35);
+    animation: pulse 2.5s ease-in-out infinite, fadeIn 1.5s ease both;
+    z-index: 2;
+    margin-bottom: 36px;
+  }
+
+  .counter-badge .num {
+    font-family: 'Playfair Display', serif;
+    font-size: 4rem;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -2px;
+  }
+
+  .counter-badge .label {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.85rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    opacity: 0.9;
+    margin-top: 2px;
+  }
+
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 8px rgba(232,84,122,0.15), 0 0 0 16px rgba(232,84,122,0.07), 0 20px 60px rgba(139,26,58,0.35); }
+    50% { box-shadow: 0 0 0 12px rgba(232,84,122,0.2), 0 0 0 24px rgba(232,84,122,0.1), 0 25px 70px rgba(139,26,58,0.45); }
+  }
+
+  /* TITLE */
+  .title-wrap {
+    text-align: center;
+    z-index: 2;
+    animation: riseUp 1.2s cubic-bezier(0.22,1,0.36,1) 0.3s both;
+  }
+
+  .name {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3.5rem, 10vw, 7rem);
+    font-style: italic;
+    color: var(--deep);
+    letter-spacing: -1px;
+    line-height: 1;
+    text-shadow: 0 2px 30px rgba(139,26,58,0.15);
+  }
+
+  .tagline {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1rem, 2.5vw, 1.4rem);
+    color: var(--rose);
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    margin-top: 10px;
+    font-weight: 300;
+  }
+
+  .divider {
+    display: flex; align-items: center; gap: 16px;
+    margin: 28px auto;
+    width: fit-content;
+    z-index: 2;
+    animation: fadeIn 2s ease 0.8s both;
+  }
+
+  .divider-line { width: 80px; height: 1px; background: linear-gradient(90deg, transparent, var(--gold)); }
+  .divider-line.r { background: linear-gradient(90deg, var(--gold), transparent); }
+  .divider span { font-size: 1.2rem; }
+
+  .message {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+    font-style: italic;
+    color: #7a3050;
+    text-align: center;
+    max-width: 520px;
+    line-height: 1.7;
+    padding: 0 24px;
+    z-index: 2;
+    animation: riseUp 1.2s cubic-bezier(0.22,1,0.36,1) 0.6s both;
+  }
+
+  /* SCROLL ARROW */
+  .scroll-hint {
+    position: absolute;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    z-index: 2;
+    animation: fadeIn 2s ease 2s both;
+    color: var(--rose);
+    opacity: 0.7;
+  }
+
+  .scroll-hint span { font-family: 'Cormorant Garamond', serif; font-size: 0.75rem; letter-spacing: 3px; text-transform: uppercase; }
+  .scroll-hint .arrow { font-size: 1.2rem; animation: bounce 1.5s ease-in-out infinite; }
+  @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(6px)} }
+
+  /* REASONS SECTION */
+  .section {
+    position: relative;
+    z-index: 1;
+    padding: 80px 24px;
+    background: linear-gradient(180deg, var(--cream) 0%, #fdf0f5 50%, var(--cream) 100%);
+    text-align: center;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    color: var(--deep);
+    font-style: italic;
+    margin-bottom: 12px;
+  }
+
+  .section-sub {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 60px;
+  }
+
+  .cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .card {
+    background: white;
+    border-radius: 20px;
+    padding: 32px 28px;
+    width: 260px;
+    box-shadow: 0 4px 30px rgba(232,84,122,0.08), 0 1px 3px rgba(139,26,58,0.05);
+    border: 1px solid rgba(232,84,122,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--rose), var(--gold));
+  }
+
+  .card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 40px rgba(232,84,122,0.18);
+  }
+
+  .card-icon { font-size: 2.2rem; margin-bottom: 14px; display: block; }
+
+  .card-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.05rem;
+    color: #6b2545;
+    line-height: 1.65;
+    font-style: italic;
+  }
+
+  /* CLOSING SECTION */
+  .closing {
+    position: relative;
+    z-index: 1;
+    min-height: 60vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 24px;
+    background: linear-gradient(180deg, var(--cream), #fce8ee);
+    text-align: center;
+  }
+
+  .closing-heart {
+    font-size: 4rem;
+    animation: heartbeat 1.4s ease-in-out infinite;
+    margin-bottom: 32px;
+  }
+
+  @keyframes heartbeat {
+    0%,100% { transform: scale(1); }
+    14% { transform: scale(1.15); }
+    28% { transform: scale(1); }
+    42% { transform: scale(1.1); }
+    56% { transform: scale(1); }
+  }
+
+  .closing-quote {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.4rem, 4vw, 2.8rem);
+    font-style: italic;
+    color: var(--deep);
+    max-width: 640px;
+    line-height: 1.4;
+    margin-bottom: 24px;
+  }
+
+  .closing-sig {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    color: var(--rose);
+    letter-spacing: 2px;
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes riseUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* FLOATING HEARTS on click */
+  .click-heart {
+    position: fixed;
+    pointer-events: none;
+    font-size: 1.5rem;
+    animation: floatUp 1.2s ease-out forwards;
+    z-index: 999;
+  }
+  @keyframes floatUp {
+    0% { opacity: 1; transform: translateY(0) scale(1); }
+    100% { opacity: 0; transform: translateY(-120px) scale(0.5); }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="canvas"></canvas>
+
+<!-- HERO -->
+<section class="hero">
+
+  <!-- Decorative flower ring -->
+  <div class="flower-ring" id="flowerRing"></div>
+
+  <div class="counter-badge">
+    <span class="num">100</span>
+    <span class="label">Days</span>
+  </div>
+
+  <div class="title-wrap">
+    <div class="name">Aya</div>
+    <div class="tagline">My favourite person</div>
+  </div>
+
+  <div class="divider">
+    <div class="divider-line"></div>
+    <span>🌸</span>
+    <div class="divider-line r"></div>
+  </div>
+
+  <p class="message">
+    100 days of laughing, smiling, and falling a little more every single day. This is for you.
+  </p>
+
+  <div class="scroll-hint">
+    <span>scroll</span>
+    <div class="arrow">↓</div>
+  </div>
+</section>
+
+<!-- REASONS SECTION -->
+<section class="section">
+  <div class="section-title">Why I love you</div>
+  <div class="section-sub">100 days & counting</div>
+
+  <div class="cards">
+    <div class="card">
+      <span class="card-icon">🌹</span>
+      <p class="card-text">Your smile is the first thing I think about every morning.</p>
+    </div>
+    <div class="card">
+      <span class="card-icon">✨</span>
+      <p class="card-text">You make ordinary moments feel like something out of a movie.</p>
+    </div>
+    <div class="card">
+      <span class="card-icon">🌸</span>
+      <p class="card-text">The way you laugh — I would do anything to hear it every day.</p>
+    </div>
+    <div class="card">
+      <span class="card-icon">💫</span>
+      <p class="card-text">With you, 100 days felt like both forever and a blink.</p>
+    </div>
+    <div class="card">
+      <span class="card-icon">🦋</span>
+      <p class="card-text">You make me want to be better — just by being you.</p>
+    </div>
+    <div class="card">
+      <span class="card-icon">💕</span>
+      <p class="card-text">Every day with you is a day I wouldn't trade for anything.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CLOSING -->
+<section class="closing">
+  <div class="closing-heart">💖</div>
+  <div class="closing-quote">
+    "Here's to 100 days, and to every single one that comes after."
+  </div>
+  <div class="closing-sig">— with all my love, always 🌸</div>
+</section>
+
+<script>
+// ─── CANVAS PARTICLES (hearts + petals) ───
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+
+function resize() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+const symbols = ['❤️','🌸','💕','✿','🌺','💗','🌷','💝'];
+const particles = [];
+
+class Particle {
+  constructor() { this.reset(true); }
+  reset(init) {
+    this.x = Math.random() * canvas.width;
+    this.y = init ? Math.random() * canvas.height : canvas.height + 40;
+    this.size = 12 + Math.random() * 20;
+    this.speed = 0.3 + Math.random() * 0.7;
+    this.drift = (Math.random() - 0.5) * 0.5;
+    this.opacity = 0.15 + Math.random() * 0.4;
+    this.symbol = symbols[Math.floor(Math.random() * symbols.length)];
+    this.rotation = Math.random() * Math.PI * 2;
+    this.rotSpeed = (Math.random() - 0.5) * 0.02;
+    this.sway = Math.random() * Math.PI * 2;
+    this.swaySpeed = 0.01 + Math.random() * 0.02;
+  }
+  update() {
+    this.y -= this.speed;
+    this.sway += this.swaySpeed;
+    this.x += Math.sin(this.sway) * 0.5 + this.drift;
+    this.rotation += this.rotSpeed;
+    if (this.y < -50) this.reset(false);
+  }
+  draw() {
+    ctx.save();
+    ctx.globalAlpha = this.opacity;
+    ctx.translate(this.x, this.y);
+    ctx.rotate(this.rotation);
+    ctx.font = `${this.size}px serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(this.symbol, 0, 0);
+    ctx.restore();
+  }
+}
+
+for (let i = 0; i < 55; i++) particles.push(new Particle());
+
+function animate() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  particles.forEach(p => { p.update(); p.draw(); });
+  requestAnimationFrame(animate);
+}
+animate();
+
+// ─── FLOWER RING ───
+const ring = document.getElementById('flowerRing');
+const flowerEmoji = ['🌸','🌺','🌼','🌷','🌻','💮','🪷','🌹'];
+const count = 14;
+for (let i = 0; i < count; i++) {
+  const petal = document.createElement('span');
+  petal.className = 'petal';
+  const angle = (i / count) * 360;
+  const r = 230;
+  const rad = (angle * Math.PI) / 180;
+  const x = 50 + (r / 500) * 100 * Math.cos(rad);
+  const y = 50 + (r / 500) * 100 * Math.sin(rad);
+  petal.style.left = `${x}%`;
+  petal.style.top = `${y}%`;
+  petal.style.transform = `translate(-50%, -50%)`;
+  petal.style.animationDelay = `${(i / count) * 3}s`;
+  petal.style.fontSize = `${1.2 + Math.random() * 0.8}rem`;
+  petal.textContent = flowerEmoji[i % flowerEmoji.length];
+  ring.appendChild(petal);
+}
+
+// ─── CLICK HEARTS ───
+document.addEventListener('click', (e) => {
+  for (let i = 0; i < 4; i++) {
+    const h = document.createElement('div');
+    h.className = 'click-heart';
+    h.textContent = ['💕','💗','💖','🌸','✨'][Math.floor(Math.random() * 5)];
+    h.style.left = (e.clientX + (Math.random()-0.5)*40) + 'px';
+    h.style.top = (e.clientY + (Math.random()-0.5)*20) + 'px';
+    h.style.animationDelay = (i * 0.08) + 's';
+    document.body.appendChild(h);
+    setTimeout(() => h.remove(), 1400);
+  }
+});
+
+// ─── SCROLL REVEAL ───
+const cards = document.querySelectorAll('.card');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      e.target.style.animation = `riseUp 0.6s cubic-bezier(0.22,1,0.36,1) ${e.target.dataset.i * 0.1}s both`;
+    }
+  });
+}, { threshold: 0.1 });
+cards.forEach((c, i) => { c.dataset.i = i; c.style.opacity = '0'; observer.observe(c); });
+</script>
+</body>
+</html>
